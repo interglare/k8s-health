@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: health-deployment
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: health-app
+  template:
+    metadata:
+      labels: 
+        app: health-app
+    spec:
+      containers:
+        - name: flask-api
+          image: 14041503160217011800/flask-api
+          ports:
+            - name: web
+              containerPort: 8000
+          livenessProbe: 
+            httpGet:
+              port: 8000
+              path: /
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 2
+          readinessProbe:
+            httpGet:
+              port: 8000
+              path: /health
+            initialDelaySeconds: 10
+            periodSeconds: 5
